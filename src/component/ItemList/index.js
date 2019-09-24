@@ -11,7 +11,10 @@ class ItemList extends React.Component {
             keyword: null,
             loading: false,
             list: [],
-        }
+            currentList: [],
+            currentPage: 1,
+            itemsPerPage: 12,
+        };
     }
 
     componentDidMount = () => {
@@ -20,36 +23,44 @@ class ItemList extends React.Component {
     }
 
     handleKeyworkRequest = () => {
-        this.setState({loading: true});
-        
+        this.setState({ loading: true });
+
         axios.get(url)
             .then(res => {
                 let data = res.data.split('\n');
                 let next = [];
                 let item = null;
-                for (let i = 0; i < data.length-1; i++) {
+                for (let i = 0; i < data.length - 1; i++) {
                     item = this.analyseData(data[i]);
                     item !== null ? next.push(item) : next.push();
                 }
-                this.setState({list: next});
+                this.setState({
+                    list: next,
+                });
             })
             .catch(err => {
-                console.log(err);
+                this.setState({
+                    list: ["There was an error"],
+                });
             })
-            .finally( () => {
-                this.setState({loading: false})
+            .finally(() => {
+                const lastItemIndex = this.state.currentPage * this.state.itemsPerPage;
+                const firstItemIndex = lastItemIndex - this.state.itemsPerPage;
+                
+                this.setState({
+                    loading: false,
+                    currentList: this.state.list.slice(firstItemIndex, lastItemIndex),
+                });
             })
     }
 
     analyseData = (data) => {
-        console.log(true);
         data = JSON.parse(data);
         let keywords = this.state.keyword.split(" ");
 
         for (let key in data) {
             if (data.hasOwnProperty(key)) {
-                // console.log(data[key])
-                if (typeof(data[key]) === 'string' && data[key].includes(keywords[0])) {
+                if (typeof (data[key]) === 'string' && data[key].includes(keywords[0])) {
                     return data;
                 }
             }
@@ -57,22 +68,29 @@ class ItemList extends React.Component {
         return null;
     }
 
+
     render = () => {
-        const listComponent = this.state.list.map(item => 
+        const listComponent = this.state.currentList.map(item => 
             <li key={item.product_id} className="product-result-item">
                 {item.product_title}
             </li>
-            );
+        );
         return (
             <div>
                 {
                     this.state.loading ?
-                    <h1>Loading</h1>
-                    :
-                    this.state.list.length > 0 ?
-                    listComponent
-                    :
-                    <h1>Empty</h1>
+                        <h1>Loading</h1>
+                        :
+                        <div>
+                            <h1>search: {this.state.keyword}</h1>
+                            {
+                                this.state.currentList.length > 0 ?
+                                listComponent
+                                :
+                                <h1>Empty</h1>
+                            }
+                        </div>
+                        
                 }
             </div>
         )

@@ -1,0 +1,32 @@
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.Button {
+    color: aliceblue;
+    background-color: darkcyan;
+    text-decoration: none;
+
+    padding: 10px 20px 10px 20px;
+    border-radius: 1em;
+    border: none;
+    font-size: inherit;
+}
+
+.Search {
+    width: 50vmin;
+    text-align: center;
+    font-size: inherit;
+    color: #333333;
+}
+
+.Input {
+    margin: 1em;
+}

@@ -19,11 +19,20 @@ class ItemList extends React.Component {
         };
     }
 
+    /**
+     * When the list is mounted, ensure that the search keyword 
+     * is tracked and begin fetching the data from the URL.
+     */
     componentDidMount = () => {
         this.setState({ keyword: this.props.query })
         this.handleKeyworkRequest(this.state.keyword)
     }
 
+    /**
+     * Begin loading the URL resource. For each JSON object, 
+     * analyse whether the items match the search criteria 
+     * set by the user and store them to be displayed.
+     */
     handleKeyworkRequest = () => {
         this.setState({ loading: true });
 
@@ -51,20 +60,28 @@ class ItemList extends React.Component {
             })
     }
 
+    /**
+     * Determine whether a JSON object is relevant to the provided 
+     * keyword.
+     */
     analyseData = (data) => {
         data = JSON.parse(data);
-        let keywords = this.state.keyword.split(" ");
+        let kwargs = this.state.keyword.split(" ");
 
-        for (let key in data) {
-            if (data.hasOwnProperty(key)) {
-                if (typeof (data[key]) === 'string' && data[key].includes(keywords[0])) {
-                    return data;
-                }
-            }
-        }
-        return null;
+        for (let i in kwargs) {
+            if (!data.product_title.includes(kwargs[i]) &&
+                !data.product_categories.includes(kwargs[i]))
+                return null;
+        };
+
+        return data;
     }
 
+    /**
+     * Update the items on the page when the pagination component 
+     * triggers a navigation event. This function is mainly used as 
+     * a callback from the pagination component.
+     */
     updatePage = (page) => {
         this.setState({
             currentPage: page,
@@ -79,18 +96,26 @@ class ItemList extends React.Component {
 
 
     render = () => {
+        /// Generate a display list of items. The key is drawn from 
+        /// product_id supplemented in the URL resource, but it is 
+        /// important to note that there are duplicates. The keys 
+        /// should be unique, rather than implementing an auto-increment 
+        /// key in this component (for data storing purposes).
         const listComponent = this.state.currentList.map(item =>
-            <div className="card d-inline-flex m-2" key={item.product_id} style={{width: 18 + "rem"}}>
-                <img className="card-img-top" src={item.image_urls[0]} alt="Card image cap"></img>
+            <div className="card d-inline-flex m-2" key={item.product_id} style={{ width: 18 + "rem" }}>
+                <img className="card-img-top" src={item.image_urls[0]} alt={item.product_categories}></img>
                 <div className="card-body">
                     <h5 className="card-title">{item.product_title}</h5>
                     <p className="card-text">{item.product_description.substring(0, 180)}</p>
-                    <a href="#" className="btn btn-primary">Go somewhere</a>
+                    <a href={item.url} className="btn btn-primary">Buy Me!</a>
                 </div>
             </div>
         );
         return (
             <div>
+                <button 
+                onClick={() => this.props.reset(null)}
+                className="btn btn-danger">Back</button>
                 {
                     this.state.loading ?
                         <h1>Loading</h1>
@@ -103,14 +128,12 @@ class ItemList extends React.Component {
                                     :
                                     <h1>Empty</h1>
                             }
-
                             <Pagination
                                 callback={this.updatePage}
                                 total={this.state.list.length / this.state.itemsPerPage}
                             />
 
                         </div>
-
                 }
             </div>
         )

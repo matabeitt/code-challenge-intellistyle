@@ -16,7 +16,6 @@ class App extends React.Component {
    * render the search or list component of the SPA.
    */
   setQuery = (q) => {
-    if (q === null) return;
     this.setState({
       query: q,
     });
@@ -30,7 +29,9 @@ class App extends React.Component {
             this.state.query === null ?
             <Search callback={this.setQuery.bind(this)}/>
             :
-            <ItemList query={this.state.query}/>
+            <ItemList 
+            reset={this.setQuery}
+            query={this.state.query}/>
             
           }
         </div>

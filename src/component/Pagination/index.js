@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react';
 const Pagination = ({ callback, total }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
+    /**
+     * When the current page changes in this component,
+     * trigger the list component callback to update the 
+     * list.
+     */
     useEffect(() => {
         callback(currentPage);
     },[callback, currentPage]);

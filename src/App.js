@@ -9,20 +9,22 @@ class App extends React.Component {
     this.state = {
       query: null,
     };
-  }
+  };
 
+  /**
+   * Set the query used by this module to conditionally 
+   * render the search or list component of the SPA.
+   */
   setQuery = (q) => {
     if (q === null) return;
     this.setState({
       query: q,
     });
-  }
+  };
 
   render = () => {
     return (
       <div className="App">
-        
-
         <div>
           {
             this.state.query === null ?
@@ -32,11 +34,9 @@ class App extends React.Component {
             
           }
         </div>
-
       </div>
-
-    )
-  }
-}
+    );
+  };
+};
 
 export default App;

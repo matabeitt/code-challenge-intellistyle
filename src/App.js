@@ -1,6 +1,6 @@
 import React from 'react';
 import Search from './component/Search';
-
+import ItemList from './component/ItemList';
 import './App.css';
 
 class App extends React.Component {
@@ -28,7 +28,8 @@ class App extends React.Component {
             this.state.query === null ?
             <Search callback={this.setQuery.bind(this)}/>
             :
-            <p> { this.state.query }</p>
+            <ItemList query={this.state.query}/>
+            
           }
         </div>
 
